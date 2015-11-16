@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source env.sh
+. env.sh
 
 ## Variables
 db=""
@@ -13,7 +13,7 @@ VERSION=0.1
 usage()
 {
         echo "\n************************ Usage ********************************** \n";
-        echo "sh dump.sh -d dbname tablename -o outputdir"
+        echo "bash dump.sh -d dbname -t tablename -o outputdir"
         echo "OPTIONS:"
 	echo "-d database to dump"
 	echo "-t table to dump"
@@ -46,18 +46,28 @@ done
 
 dump()
 {
-	#get total record count
-	row_cnt=$(mysql -u$USER -h$HOST -P$PORT --raw --batch -e "select count(*) from ${db}.${tbl}" -s)
-	echo $row_cnt
+	#Get total record count
+	row_cnt=$(mysql -u$SRC_USER -h$SRC_HOST -P$SRC_PORT --raw --batch -e "select count(*) from ${db}.${tbl}" -s)
+	echo "Total $row_cnt rows in ${db}.${tbl}"
 	i=0
 	cnt=0
 	first_dump=0
 	file_prefix="${output}/${db}-${tbl}"
-	## while $cnt<$row_cnt {
-	## 	where="1 ${cnt}, ${cnt}+${MAX_RECORDS}"
-	##      file="${file_prefix}.${cnt}"
-	##	mysqldump --where "${where}"  > file
-	##} 
+	while [ $cnt -lt $row_cnt ]
+	do
+		next_step=`expr ${cnt} + ${MAX_RECORDS}`
+		echo "Dumping from $cnt to $next_step"
+		where="1 limit ${cnt}, ${MAX_RECORDS}"
+		file="${file_prefix}.${i}"
+		i=`expr $i + 1`
+		if [ $cnt == 0 ]; then
+			mysqldump -u$SRC_USER -h$SRC_HOST --port $SRC_PORT --opt --where "$where" $db $tbl > $file
+		else
+			mysqldump -u$SRC_USER -h$SRC_HOST --port $SRC_PORT --skip-add-drop-table --no-create-db --no-create-info --where "$where" $db $tbl > $file
+		fi
+		cnt=$next_step
+	done
+	echo "Done!"
 }
 
 dump

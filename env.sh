@@ -1,10 +1,16 @@
 #!/bin/bash
 
 ## MySQL connection info
-HOST="127.0.0.1"
-USER="root"
-PWD=""
-PORT=3306
+# Source
+SRC_HOST="127.0.0.1"
+SRC_USER="root"
+SRC_PWD=""
+SRC_PORT=3306
+# Destination
+DST_HOST="127.0.0.1"
+DST_USER="root"
+DST_PWD=""
+DST_PORT=4000
 
 ## Dump config
-MAX_RECORDS=30000
+MAX_RECORDS=3

@@ -5,7 +5,9 @@
 ## Variables
 db=""
 tbl=""
-output="out"
+output=${TMP_DIR}
+
+mkdir $output
 
 VERSION=0.1
 
@@ -44,7 +46,7 @@ do
         esac
 done
 
-dump()
+dump_table()
 {
 	#Get total record count
 	row_cnt=$(mysql -u$SRC_USER -h$SRC_HOST -P$SRC_PORT --raw --batch -e "select count(*) from ${db}.${tbl}" -s)
@@ -58,7 +60,7 @@ dump()
 		next_step=`expr ${cnt} + ${MAX_RECORDS}`
 		echo "Dumping from $cnt to $next_step"
 		where="1 limit ${cnt}, ${MAX_RECORDS}"
-		file="${file_prefix}.${i}"
+		file="${file_prefix}-${i}"
 		i=`expr $i + 1`
 		if [ $cnt == 0 ]; then
 			mysqldump -u$SRC_USER -h$SRC_HOST --port $SRC_PORT --opt --where "$where" $db $tbl > $file
@@ -68,6 +70,28 @@ dump()
 		cnt=$next_step
 	done
 	echo "Done!"
+}
+
+dump_db()
+{
+	tbls=`echo "show tables;" | mysql -u$SRC_USER -h$SRC_HOST --port $SRC_PORT $db |grep -v '^Tables_in_'`
+	for t in $tbls
+	do
+		echo "Dumping table ${t}.........."
+		tbl="$t"
+		dump_table
+		echo "Dump table ${t} succ"
+	done
+	echo "Dump database $db succ!"
+}
+
+dump()
+{
+	if [ "${tbl}"=="" ]; then
+		dump_db
+	else
+		dump_table
+	fi
 }
 
 dump

@@ -5,7 +5,7 @@
 ## Variables
 db=""
 tbl=""
-input="out"
+input=${TMP_DIR}
 
 VERSION=0.1
 
@@ -17,7 +17,7 @@ usage()
         echo "OPTIONS:"
 	echo "-d database to import"
 	echo "-t table to import"
-	echo "-o input dir"
+	echo "-i input dir"
 	echo "-h help"
         exit 0;
 }
@@ -46,7 +46,13 @@ done
 
 import()
 {
-	FILES="${input}/${db}-${tbl}.*"
+	if [ "${tbl}"=="" ]; then
+		FILES=`ls ${input}/${db}-* | sort -V`
+	else
+		FILES="${input}/${db}-${tbl}-*"
+	fi
+	# groupby FILES by db and table
+	echo "set @autocommit=1;" | mysql -u$DST_USER -h$DST_HOST --port $DST_PORT $db |grep -v '^Tables_in_'
 	for f in $FILES
 	do
 		mysql -u$DST_USER -h$DST_HOST -P$DST_PORT $db < $f 

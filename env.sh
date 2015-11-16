@@ -14,3 +14,4 @@ DST_PORT=4000
 
 ## Dump config
 MAX_RECORDS=3
+TMP_DIR="tmp"

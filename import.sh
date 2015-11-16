@@ -22,7 +22,7 @@ usage()
         exit 0;
 }
 
-while getopts "d:t:hi:" arg #选项后面的冒号表示该选项需要参数
+while getopts "d:t:hi:" arg
 do
         case $arg in
              d)

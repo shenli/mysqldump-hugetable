@@ -1,11 +1,13 @@
 #!/bin/bash
 
 ## MySQL connection info
+
 # Source
 SRC_HOST="127.0.0.1"
 SRC_USER="root"
 SRC_PWD=""
 SRC_PORT=3306
+
 # Destination
 DST_HOST="127.0.0.1"
 DST_USER="root"

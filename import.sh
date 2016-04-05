@@ -52,10 +52,10 @@ import()
 		FILES="${input}/${db}-${tbl}-*"
 	fi
 	# groupby FILES by db and table
-	echo "set @autocommit=1;" | mysql -u$DST_USER -h$DST_HOST --port $DST_PORT $db |grep -v '^Tables_in_'
+	echo "set @autocommit=1;" | mysql -u$DST_USER -h$DST_HOST --port $DST_PORT -p$DST_PWD $db |grep -v '^Tables_in_'
 	for f in $FILES
 	do
-		mysql -u$DST_USER -h$DST_HOST -P$DST_PORT $db < $f 
+		mysql -u$DST_USER -h$DST_HOST -P$DST_PORT -p$DST_PWD $db < $f 
 	done
 	#Get total record count
 	echo "Done!"

@@ -49,7 +49,7 @@ done
 dump_table()
 {
 	#Get total record count
-	row_cnt=$(mysql -u$SRC_USER -h$SRC_HOST -P$SRC_PORT --raw --batch -e "select count(*) from ${db}.${tbl}" -s)
+	row_cnt=$(mysql -u$SRC_USER -h$SRC_HOST -P$SRC_PORT -p$SRC_PWD --raw --batch -e "select count(*) from ${db}.${tbl}" -s)
 	echo "Total $row_cnt rows in ${db}.${tbl}"
 	i=0
 	cnt=0
@@ -63,9 +63,9 @@ dump_table()
 		file="${file_prefix}-${i}"
 		i=`expr $i + 1`
 		if [ $cnt == 0 ]; then
-			mysqldump -u$SRC_USER -h$SRC_HOST --port $SRC_PORT --opt --where "$where" $db $tbl > $file
+			mysqldump -u$SRC_USER -h$SRC_HOST --port $SRC_PORT -p$SRC_PWD --skip-disable-keys --add-drop-table --add-locks --create-options --extended-insert --lock-tables --set-charset --where "$where" $db $tbl > $file
 		else
-			mysqldump -u$SRC_USER -h$SRC_HOST --port $SRC_PORT --skip-add-drop-table --no-create-db --no-create-info --where "$where" $db $tbl > $file
+			mysqldump -u$SRC_USER -h$SRC_HOST --port $SRC_PORT -p$SRC_PWD --skip-disable-keys --skip-add-drop-table --no-create-db --no-create-info --where "$where" $db $tbl > $file
 		fi
 		cnt=$next_step
 	done
@@ -74,7 +74,7 @@ dump_table()
 
 dump_db()
 {
-	tbls=`echo "show tables;" | mysql -u$SRC_USER -h$SRC_HOST --port $SRC_PORT $db |grep -v '^Tables_in_'`
+	tbls=`echo "show tables;" | mysql -u$SRC_USER -h$SRC_HOST --port $SRC_PORT -p$SRC_PWD $db |grep -v '^Tables_in_'`
 	for t in $tbls
 	do
 		echo "Dumping table ${t}.........."

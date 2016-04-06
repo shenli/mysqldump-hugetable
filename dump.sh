@@ -55,7 +55,7 @@ dump_table()
 	cnt=0
 	first_dump=0
 	file_prefix="${output}/${db}-${tbl}"
-	while [ $cnt -lt $row_cnt ]
+	while [ $cnt -le $row_cnt ]
 	do
 		next_step=`expr ${cnt} + ${MAX_RECORDS}`
 		echo "Dumping from $cnt to $next_step"

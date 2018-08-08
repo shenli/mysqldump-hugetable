@@ -46,7 +46,7 @@ done
 
 import()
 {
-	if [ "${tbl}"=="" ]; then
+	if [ "${tbl}"="" ]; then
 		FILES=`ls ${input}/${db}-* | sort -V`
 	else
 		FILES="${input}/${db}-${tbl}-*"

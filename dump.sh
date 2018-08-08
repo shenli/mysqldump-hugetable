@@ -87,7 +87,7 @@ dump_db()
 
 dump()
 {
-	if [ "${tbl}"=="" ]; then
+	if [ "${tbl}"="" ]; then
 		dump_db
 	else
 		dump_table

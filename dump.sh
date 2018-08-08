@@ -7,7 +7,7 @@ db=""
 tbl=""
 output=${TMP_DIR}
 
-mkdir $output
+# mkdir $output
 
 VERSION=0.1
 
@@ -87,7 +87,7 @@ dump_db()
 
 dump()
 {
-	if [ "${tbl}"="" ]; then
+	if [ "${tbl}" = "" ]; then
 		dump_db
 	else
 		dump_table
